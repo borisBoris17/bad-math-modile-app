@@ -1,20 +1,132 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import Constants from 'expo-constants';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Provider, Text } from 'react-native-paper';
 
 export default function App() {
+
+  const theme = {
+    "colors": {
+      "primary": "#FF720A",
+      "onPrimary": "rgb(255, 255, 255)",
+      "primaryContainer": "#fff5ee",
+      "onPrimaryContainer": "rgb(0, 31, 39)",
+      "secondary": "#d5edf1",
+      "onSecondary": "rgb(255, 255, 255)",
+      "secondaryContainer": "rgb(206, 230, 240)",
+      "onSecondaryContainer": "rgb(6, 30, 37)",
+      "tertiary": "#f7fbfc",
+      "onTertiary": "rgb(255, 255, 255)",
+      "tertiaryContainer": "rgb(223, 224, 255)",
+      "onTertiaryContainer": "rgb(21, 25, 55)",
+      "error": "rgb(186, 26, 26)",
+      "onError": "rgb(255, 255, 255)",
+      "errorContainer": "rgb(255, 218, 214)",
+      "onErrorContainer": "rgb(65, 0, 2)",
+      "background": "rgb(251, 252, 254)",
+      "onBackground": "rgb(25, 28, 29)",
+      "surface": "#c3dddf",
+      "onSurface": "rgb(25, 28, 29)",
+      "surfaceVariant": "rgb(219, 228, 232)",
+      "onSurfaceVariant": "rgb(64, 72, 75)",
+      "outline": "rgb(112, 120, 124)",
+      "outlineVariant": "rgb(191, 200, 204)",
+      "shadow": "rgb(0, 0, 0)",
+      "scrim": "rgb(0, 0, 0)",
+      "inverseSurface": "rgb(46, 49, 50)",
+      "inverseOnSurface": "rgb(239, 241, 242)",
+      "inversePrimary": "rgb(89, 213, 248)",
+      "elevation": {
+        "level0": "transparent",
+        "level1": "rgb(238, 245, 248)",
+        "level2": "rgb(231, 240, 244)",
+        "level3": "rgb(223, 236, 240)",
+        "level4": "rgb(221, 234, 239)",
+        "level5": "rgb(216, 231, 236)"
+      },
+      "surfaceDisabled": "rgba(25, 28, 29, 0.12)",
+      "onSurfaceDisabled": "rgba(25, 28, 29, 0.38)",
+      "backdrop": "rgba(41, 50, 53, 0.4)"
+    }
+  }
+
+  const styles = StyleSheet.create({
+    statusBar: {
+      height: Constants.statusBarHeight,
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.primaryContainer,
+      alignItems: 'center',
+    },
+    appTitleContainer: {
+      marginVertical: '10%',
+    },
+    appTitle: {
+      fontSize: 45,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+    },
+    appLogoContainer: {
+      marginTop: '10%',
+      marginBottom: '35%',
+    },
+    appLogTop: {
+      fontSize: 60,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+    },
+    appLogBottom: {
+      fontSize: 45,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+    },
+    buttonContainer: {
+      width: '90%',
+      marginVertical: '3%', 
+    },
+    buttonStyle: {
+      backgroundColor: theme.colors.primary,
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderRadius: 15,
+      width: '100%',
+    },
+    buttonLabel: {
+      fontSize: 35,
+      color: theme.colors.onPrimary,
+      textAlign: 'center',
+    },
+  });
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider theme={theme}>
+      <View style={styles.statusBar}></View>
+      <View style={styles.container}>
+        <View style={styles.appTitleContainer}>
+          <Text style={styles.appTitle}>Bad Math</Text>
+        </View>
+        <View style={styles.appLogoContainer}>
+          <Text style={styles.appLogTop}>+ -</Text>
+          <Text style={styles.appLogBottom}>% X</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle}>
+            <Text style={styles.buttonLabel}>Timed</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle}>
+            <Text style={styles.buttonLabel}>Survival</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle}>
+            <Text style={styles.buttonLabel}>High Scores</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
