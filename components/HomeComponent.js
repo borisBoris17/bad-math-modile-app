@@ -64,6 +64,10 @@ export default function HomeComponent({ navigation }) {
     navigation.navigate('SurvivalGame')
   }
 
+  const onHighScorePress = () => {
+    navigation.navigate('HighScores')
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.appTitleContainer}>
@@ -86,7 +90,7 @@ export default function HomeComponent({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={onHighScorePress}>
           <Text style={styles.buttonLabel}>High Scores</Text>
         </TouchableOpacity>
       </View>

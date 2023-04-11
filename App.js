@@ -7,10 +7,21 @@ import HomeComponent from './components/HomeComponent';
 import TimedGameComponent from './components/TimedGameComponent';
 import SurvivalGameComponent from './components/SurvivalGameComponent';
 import GameComponent from './components/GameComponent';
+import { useEffect, useState } from 'react';
+import * as SQLite from 'expo-sqlite'
+import { initDatabase } from './Utilities/dbUtils';
+import HighScoreScreenComponent from './components/HighScoreScreenComponent';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [db, setDb] = useState(undefined)
+
+  useEffect(() => {
+    const newDb = SQLite.openDatabase('db.db');
+    initDatabase(newDb)
+    setDb(newDb)
+  }, [])
 
   const theme = {
     "colors": {
@@ -120,12 +131,17 @@ export default function App() {
           <Stack.Screen
             options={{ headerShown: false }}
             name="TimedGame">
-            {(props) => <GameComponent {...props} gameType='Timed' />}
+            {(props) => <GameComponent {...props} gameType='Timed' db={db} />}
           </Stack.Screen>
           <Stack.Screen
             options={{ headerShown: false }}
             name="SurvivalGame">
-            {(props) => <GameComponent {...props} gameType='Survival' startTime={3} />}
+            {(props) => <GameComponent {...props} gameType='Survival' startTime={3} db={db} />}
+          </Stack.Screen>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="HighScores">
+            {(props) => <HighScoreScreenComponent {...props} db={db} />}
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
