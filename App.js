@@ -1,6 +1,14 @@
 import Constants from 'expo-constants';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Provider, Text } from 'react-native-paper';
+import HomeComponent from './components/HomeComponent';
+import TimedGameComponent from './components/TimedGameComponent';
+import SurvivalGameComponent from './components/SurvivalGameComponent';
+import GameComponent from './components/GameComponent';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
 
@@ -83,7 +91,7 @@ export default function App() {
     },
     buttonContainer: {
       width: '90%',
-      marginVertical: '3%', 
+      marginVertical: '3%',
     },
     buttonStyle: {
       backgroundColor: theme.colors.primary,
@@ -102,30 +110,25 @@ export default function App() {
   return (
     <Provider theme={theme}>
       <View style={styles.statusBar}></View>
-      <View style={styles.container}>
-        <View style={styles.appTitleContainer}>
-          <Text style={styles.appTitle}>Bad Math</Text>
-        </View>
-        <View style={styles.appLogoContainer}>
-          <Text style={styles.appLogTop}>+ -</Text>
-          <Text style={styles.appLogBottom}>% X</Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.buttonStyle}>
-            <Text style={styles.buttonLabel}>Timed</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.buttonStyle}>
-            <Text style={styles.buttonLabel}>Survival</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.buttonStyle}>
-            <Text style={styles.buttonLabel}>High Scores</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Home'>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Home">
+            {(props) => <HomeComponent {...props} />}
+          </Stack.Screen>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="TimedGame">
+            {(props) => <GameComponent {...props} gameType='Timed' />}
+          </Stack.Screen>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="SurvivalGame">
+            {(props) => <GameComponent {...props} gameType='Survival' startTime={3} />}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 }
