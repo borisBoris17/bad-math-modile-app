@@ -6,8 +6,9 @@ import { useProblems } from '../hooks/useProblems';
 import { GameResultComponent } from './GameResultComponent';
 import { GameStartComponent } from './GameStartComponent';
 import ProblemButtonComponent from './ProblemButtonComponent';
+import { runTransaction } from '../Utilities/dbUtils';
 
-export default function GameComponent({ navigation, gameType, startTime = 30 }) {
+export default function GameComponent({ navigation, gameType, startTime = 30, db }) {
   const [timer, setTimer] = useState(startTime)
   const [displayMessage, setDisplayMessage] = useState(false);
   const [gameOver, setGameOver] = useState(false)
@@ -20,7 +21,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30 }) 
       return
     }
     if (timer <= 0) {
-      setGameOver(true)
+      finishGame()
       return;
     }
     const interval = setInterval(() => {
@@ -31,6 +32,11 @@ export default function GameComponent({ navigation, gameType, startTime = 30 }) 
       clearInterval(interval);
     };
   }, [timer, startGame]);
+
+  const finishGame = async () => {
+    await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${"2023-04-12"}");`)
+    setGameOver(true)
+  }
 
   const theme = useTheme();
 
@@ -111,7 +117,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30 }) 
 
   return (
     <View style={styles.container}>
-      {gameOver ? <GameResultComponent score={score} handlePlayAgain={handlePlayAgain} /> :
+      {gameOver ? <GameResultComponent score={score} handlePlayAgain={handlePlayAgain} db={db} gameType={gameType} /> :
         startGame ? <React.Fragment>
           <View style={styles.timerContainer}>
             <Text style={styles.appLogTop}>{timer}</Text>
