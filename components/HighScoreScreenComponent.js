@@ -13,6 +13,7 @@ export default function HighScoreScreenComponent({ navigation, db }) {
 
   const styles = StyleSheet.create({
     container: {
+      backgroundColor: theme.colors.primaryContainer,
       alignItems: 'center',
     },
     scoresTitleContainer: {

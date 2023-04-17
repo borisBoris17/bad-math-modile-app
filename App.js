@@ -1,11 +1,9 @@
 import Constants from 'expo-constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Provider, Text } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Provider } from 'react-native-paper';
 import HomeComponent from './components/HomeComponent';
-import TimedGameComponent from './components/TimedGameComponent';
-import SurvivalGameComponent from './components/SurvivalGameComponent';
 import GameComponent from './components/GameComponent';
 import { useEffect, useState } from 'react';
 import * as SQLite from 'expo-sqlite'
@@ -29,7 +27,7 @@ export default function App() {
       "onPrimary": "rgb(255, 255, 255)",
       "primaryContainer": "#fff5ee",
       "onPrimaryContainer": "rgb(0, 31, 39)",
-      "secondary": "#d5edf1",
+      "secondary": "#16537e",
       "onSecondary": "rgb(255, 255, 255)",
       "secondaryContainer": "rgb(206, 230, 240)",
       "onSecondaryContainer": "rgb(6, 30, 37)",

@@ -11,22 +11,30 @@ export default function HighScoreTableComponent({ highScores, gameType }) {
       margin: 10,
     },
     highScoreTitle: {
-      fontSize: 28,
+      fontSize: 40,
+      color: theme.colors.primary,
+      fontWeight: 'bold',
+      textAlign: 'center',
     },
     highScoreContainer: {
       flexDirection: 'row',
       width: '85%',
     },
     scoreText: {
-      flex: 1,
+      minWidth: 50,
       margin: 5,
-      fontSize: 24,
+      fontSize: 30,
       fontWeight: 'bold',
+      color: theme.colors.secondary,
+      textAlign: 'right',
     },
     datePlayedText: {
+      flex: 1,
       margin: 5,
-      fontSize: 24,
+      fontSize: 35,
       fontWeight: 'bold',
+      color: theme.colors.secondary,
+      textAlign: 'right',
     },
   });
 
@@ -39,10 +47,10 @@ export default function HighScoreTableComponent({ highScores, gameType }) {
           </View>
           : ''
       }
-      {highScores.map(highScore => (
+      {highScores.map((highScore, index) => (
         <View key={highScore.id} style={styles.highScoreContainer}>
-          <Text style={styles.scoreText}>{highScore.score}</Text>
-          <Text style={styles.datePlayedText}>{highScore.date_played}</Text>
+          <Text style={styles.scoreText}>{index + 1}.</Text>
+          <Text style={styles.datePlayedText}>{highScore.score}</Text>
         </View>
       ))}
     </React.Fragment>
