@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import * as SQLite from 'expo-sqlite'
 import { initDatabase } from './Utilities/dbUtils';
 import HighScoreScreenComponent from './components/HighScoreScreenComponent';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const Stack = createNativeStackNavigator();
 
@@ -71,55 +72,24 @@ export default function App() {
       height: Constants.statusBarHeight,
       backgroundColor: theme.colors.primaryContainer,
     },
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.primaryContainer,
+    bannerStyle: {
       alignItems: 'center',
+      backgroundColor: theme.colors.primaryContainer,
+      paddingBottom: '5%',
     },
-    appTitleContainer: {
-      marginVertical: '10%',
+    safeAreaContainer: {
+      flex: 1,
     },
-    appTitle: {
-      fontSize: 45,
-      fontWeight: 'bold',
-      color: theme.colors.primary,
-    },
-    appLogoContainer: {
-      marginTop: '10%',
-      marginBottom: '35%',
-    },
-    appLogTop: {
-      fontSize: 60,
-      fontWeight: 'bold',
-      color: theme.colors.primary,
-    },
-    appLogBottom: {
-      fontSize: 45,
-      fontWeight: 'bold',
-      color: theme.colors.primary,
-    },
-    buttonContainer: {
-      width: '90%',
-      marginVertical: '3%',
-    },
-    buttonStyle: {
-      backgroundColor: theme.colors.primary,
-      paddingVertical: 15,
-      paddingHorizontal: 20,
-      borderRadius: 15,
-      width: '100%',
-    },
-    buttonLabel: {
-      fontSize: 35,
-      color: theme.colors.onPrimary,
-      textAlign: 'center',
+    navigationContainer: {
+      height: '90%',
+      backgroundColor: theme.colors.primaryContainer,
     },
   });
 
   return (
     <Provider theme={theme}>
       <View style={styles.statusBar}></View>
-      <NavigationContainer>
+      <NavigationContainer style={styles.navigationContainer}>
         <Stack.Navigator initialRouteName='Home'>
           <Stack.Screen
             options={{ headerShown: false }}
@@ -143,6 +113,15 @@ export default function App() {
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
+      <View style={styles.bannerStyle}>
+        <BannerAd
+          unitId={process.env.NODE_ENV !== 'production' ? TestIds.BANNER : 'ca-app-pub-4235799806003930/7116372762'}
+          size={BannerAdSize.BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true
+          }}
+        />
+      </View>
     </Provider>
   );
 }

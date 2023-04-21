@@ -4,7 +4,7 @@ import { Text, useTheme } from 'react-native-paper';
 import { runTransaction } from '../Utilities/dbUtils';
 import HighScoreTableComponent from './HighScoreTableComponent';
 
-export function GameResultComponent({ score, handlePlayAgain, db, gameType }) {
+export function GameResultComponent({ score, handlePlayAgain, db, gameType, navigation, savedScore }) {
 
   const [highScores, setHighScores] = useState([])
 
@@ -20,27 +20,36 @@ export function GameResultComponent({ score, handlePlayAgain, db, gameType }) {
   const theme = useTheme();
 
   const styles = StyleSheet.create({
+    container: {
+      display: 'flex',
+    },
     mainMessageContainer: {
-      marginBottom: '10%',
+      marginVertical: '2%',
     },
     gameText: {
       fontSize: 35,
       fontWeight: 'bold',
       textAlign: 'center'
     },
+    scoreContainer: {
+      marginVertical: '2%',
+    },
     buttonContainer: {
-      width: '90%',
-      marginVertical: '3%',
+      margin: '3%',
+    },
+    homeButtonContainer: {
+      margin: '3%',
+      marginLeft: 'auto',
     },
     buttonStyle: {
       backgroundColor: theme.colors.primary,
-      paddingVertical: 15,
+      paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 15,
       width: '100%',
     },
     buttonLabel: {
-      fontSize: 35,
+      fontSize: 25,
       color: theme.colors.onPrimary,
       textAlign: 'center',
     },
@@ -63,22 +72,39 @@ export function GameResultComponent({ score, handlePlayAgain, db, gameType }) {
       fontSize: 24,
       fontWeight: 'bold',
     },
+    buttonsContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      marginTop: 'auto',
+    },
+    highScoreTableContainer: {
+      flex: 1,
+    },
   });
 
   return (
-    <React.Fragment>
+    <View style={styles.container}>
       <View style={styles.mainMessageContainer}>
         <Text style={styles.gameText}>Game Over!</Text>
       </View>
       <View style={styles.scoreContainer}>
         <Text style={styles.gameText}>Score: {score}</Text>
       </View>
-      <HighScoreTableComponent gameType={gameType} highScores={highScores} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => handlePlayAgain()}>
-          <Text style={styles.buttonLabel}>Play Again</Text>
-        </TouchableOpacity>
+      <View style={styles.highScoreTableContainer}>
+        <HighScoreTableComponent gameType={gameType} highScores={highScores} thisScore={savedScore} />
       </View>
-    </React.Fragment>
+      <View style={styles.buttonsContainer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={() => handlePlayAgain()}>
+            <Text style={styles.buttonLabel}>Replay</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.homeButtonContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
+            <Text style={styles.buttonLabel}>Home</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   )
 }

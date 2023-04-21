@@ -1,6 +1,5 @@
-import Constants from 'expo-constants';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Provider, Text, useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 export default function HomeComponent({ navigation }) {
 
@@ -15,14 +14,18 @@ export default function HomeComponent({ navigation }) {
     appTitleContainer: {
       marginVertical: '10%',
     },
+    appLogoContainer: {
+      marginTop: '10%',
+      marginBottom: '15%',
+    },
+    buttonsContainer: {
+      alignItems: 'center',
+      width: '100%',
+    },
     appTitle: {
       fontSize: 45,
       fontWeight: 'bold',
       color: theme.colors.primary,
-    },
-    appLogoContainer: {
-      marginTop: '10%',
-      marginBottom: '35%',
     },
     appLogoIcon: {
       width: 150,
@@ -79,20 +82,22 @@ export default function HomeComponent({ navigation }) {
           source={require('../assets/badMathIcon.png')}
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={onTimedPress}>
-          <Text style={styles.buttonLabel}>Timed</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={onSurvivalPress}>
-          <Text style={styles.buttonLabel}>Survival</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={onHighScorePress}>
-          <Text style={styles.buttonLabel}>High Scores</Text>
-        </TouchableOpacity>
+      <View style={styles.buttonsContainer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={onTimedPress}>
+            <Text style={styles.buttonLabel}>Timed</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={onSurvivalPress}>
+            <Text style={styles.buttonLabel}>Survival</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={onHighScorePress}>
+            <Text style={styles.buttonLabel}>High Scores</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

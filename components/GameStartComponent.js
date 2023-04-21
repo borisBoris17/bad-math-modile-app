@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 
-export function GameStartComponent({ handleStart, gameType, startTime }) {
+export function GameStartComponent({ handleStart, gameType, startTime, navigation }) {
   const theme = useTheme();
 
   const styles = StyleSheet.create({
@@ -48,6 +48,11 @@ export function GameStartComponent({ handleStart, gameType, startTime }) {
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonStyle} onPress={() => handleStart()}>
           <Text style={styles.buttonLabel}>Start</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.buttonLabel}>Home</Text>
         </TouchableOpacity>
       </View>
     </React.Fragment>
