@@ -13,6 +13,11 @@ export default function HighScoreScreenComponent({ navigation, db }) {
 
   const styles = StyleSheet.create({
     container: {
+      flex: 1,
+      backgroundColor: theme.colors.primaryContainer,
+      alignItems: 'center',
+    },
+    scrollContainer: {
       backgroundColor: theme.colors.primaryContainer,
       alignItems: 'center',
     },
@@ -54,14 +59,16 @@ export default function HighScoreScreenComponent({ navigation, db }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <HighScoreTableComponent gameType="Timed" highScores={timedHighScores} />
-      <HighScoreTableComponent gameType="Survival" highScores={survivalHighScores} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.buttonLabel}>Home</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <HighScoreTableComponent gameType="Timed" highScores={timedHighScores} />
+        <HighScoreTableComponent gameType="Survival" highScores={survivalHighScores} />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
+            <Text style={styles.buttonLabel}>Home</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   )
 }

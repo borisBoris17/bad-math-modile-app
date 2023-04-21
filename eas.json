@@ -8,7 +8,11 @@
       "distribution": "internal",
       "ios": {
         "resourceClass": "m1-medium",
-        "image": "latest"
+        "image": "latest",
+        "simulator": true
+      },
+      "env": {
+        "UNIT_ID": "ca-app-pub-3940256099942544/2934735716"
       }
     },
     "preview": {

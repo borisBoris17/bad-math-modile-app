@@ -15,6 +15,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   const [score, setScore] = useState(0)
   const [startGame, setStartGame] = useState(false)
   const [problems, createNewProblems] = useProblems()
+  const [savedScore, setSavedScore] = useState(undefined)
 
   useEffect(() => {
     if (!startGame) {
@@ -34,7 +35,8 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   }, [timer, startGame]);
 
   const finishGame = async () => {
-    await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${"2023-04-12"}");`)
+    const savedScore = await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${"2023-04-12"}") RETURNING *;`)
+    setSavedScore(savedScore[0]);
     setGameOver(true)
   }
 
@@ -46,9 +48,6 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       backgroundColor: theme.colors.primaryContainer,
       alignItems: 'center',
     },
-    gameTitleContainer: {
-      // marginVertical: '10%',
-    },
     appTitle: {
       fontSize: 45,
       fontWeight: 'bold',
@@ -56,6 +55,10 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
     },
     timerContainer: {
       marginBottom: '10%',
+    },
+    messageContainer: {
+      marginBottom: '5%',
+      height: 100,
     },
     appLogTop: {
       fontSize: 60,
@@ -67,7 +70,15 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       fontWeight: 'bold',
       color: theme.colors.primary,
     },
+    gameContainer: {
+      width: '100%',
+      alignItems: 'center',
+    },
     buttonContainer: {
+      width: '90%',
+      marginVertical: '3%',
+    },
+    homeButtonContainer: {
       width: '90%',
       marginVertical: '3%',
     },
@@ -93,12 +104,22 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   const handleProblemPress = (problem) => {
     if (!problem.isWrong) {
       setDisplayMessage(true)
+      if (gameType === 'Timed') {
+        const newTime = timer - 2
+        if (newTime <= 0) {
+          finishGame()
+          return;
+        }
+        setTimer(timer - 2)
+      }
     } else {
       createNewProblems()
       setScore(score + 1)
       setDisplayMessage(false)
       if (gameType === 'Survival') {
         setTimer(startTime)
+      } else {
+        setTimer(timer + 1)
       }
     }
   }
@@ -117,28 +138,28 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
 
   return (
     <View style={styles.container}>
-      {gameOver ? <GameResultComponent score={score} handlePlayAgain={handlePlayAgain} db={db} gameType={gameType} /> :
-        startGame ? <React.Fragment>
+      {gameOver ? <GameResultComponent score={score} handlePlayAgain={handlePlayAgain} db={db} gameType={gameType} navigation={navigation} savedScore={savedScore} /> :
+        startGame ? <View style={styles.gameContainer}>
           <View style={styles.timerContainer}>
             <Text style={styles.appLogTop}>{timer}</Text>
           </View>
           <View style={styles.timerContainer}>
             <Text style={styles.appLogTop}>{score}</Text>
           </View>
-          <View style={styles.timerContainer}>
+          <View style={styles.messageContainer}>
             {displayMessage ? <Text style={styles.gameText}>{displayMessage} opps! that one is correct!</Text> : ''}
           </View>
           {
             problems?.map((problem, index) => <ProblemButtonComponent key={index} problem={problem} handleProblemPress={handleProblemPress} />)
           }
-        </React.Fragment> :
-          <GameStartComponent handleStart={handleStart} gameType={gameType} startTime={startTime} />
+          <View style={styles.homeButtonContainer}>
+            <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
+              <Text style={styles.buttonLabel}>Home</Text>
+            </TouchableOpacity>
+          </View>
+        </View> :
+          <GameStartComponent handleStart={handleStart} gameType={gameType} startTime={startTime} navigation={navigation} />
       }
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.buttonLabel}>Home</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
