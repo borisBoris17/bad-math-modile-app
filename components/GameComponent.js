@@ -147,7 +147,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
             <Text style={styles.appLogTop}>{score}</Text>
           </View>
           <View style={styles.messageContainer}>
-            {displayMessage ? <Text style={styles.gameText}>{displayMessage} opps! that one is correct!</Text> : ''}
+            {displayMessage ? <Text style={styles.gameText}>{displayMessage} Oops! That one is correct!</Text> : ''}
           </View>
           {
             problems?.map((problem, index) => <ProblemButtonComponent key={index} problem={problem} handleProblemPress={handleProblemPress} />)

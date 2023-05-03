@@ -115,7 +115,7 @@ export default function App() {
       </NavigationContainer>
       <View style={styles.bannerStyle}>
         <BannerAd
-          unitId={process.env.NODE_ENV !== 'production' ? TestIds.BANNER : 'ca-app-pub-4235799806003930/7116372762'}
+          unitId={process.env.NODE_ENV !== 'production' ? TestIds.BANNER : 'ca-app-pub-4235799806003930/1021392220'}
           size={BannerAdSize.BANNER}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true
