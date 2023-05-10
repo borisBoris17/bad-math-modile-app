@@ -47,6 +47,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       flex: 1,
       backgroundColor: theme.colors.primaryContainer,
       alignItems: 'center',
+      width: '100%'
     },
     appTitle: {
       fontSize: 45,
