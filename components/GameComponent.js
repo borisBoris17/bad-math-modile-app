@@ -184,30 +184,34 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
     }
     setErrorMsg('')
     const scoreObj = createScoreObj(score, name, gameType)
-    console.log('scoreObj', scoreObj)
     postScore(scoreObj)
     setOpenPostScore(false);
     setGameOver(true)
+    setName('')
     // TODO: Implement Toast message
   }
 
   const postScore = async (scoreObj) => {
-    console.log('scoreObj str', JSON.stringify(scoreObj))
-    const strJSON = JSON.stringify(scoreObj)
     try {
       const response = await fetch('https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/score',{
         method: 'POST',
         headers: {
           Accept: 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: strJSON,
+        body: JSON.stringify(scoreObj),
       });
       const json = await response.json()
-      console.log("response". json)
       return json;
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const handleDismissModal = () => {
+    setOpenPostScore(false)
+    setName('')
+    setGameOver(true)
   }
 
   return (
@@ -234,7 +238,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
         </View> :
           <GameStartComponent handleStart={handleStart} gameType={gameType} startTime={startTime} navigation={navigation} />
       }
-      <Modal visible={openPostScore} contentContainerStyle={styles.postScoreContainer} onDismiss={() => navigation.navigate('Home')}>
+      <Modal visible={openPostScore} contentContainerStyle={styles.postScoreContainer} onDismiss={handleDismissModal}>
         <View style={styles.modalTitleRow}>
           <Text style={styles.modalTitle}>Post Score</Text>
         </View>
