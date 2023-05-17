@@ -17,6 +17,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   const [startGame, setStartGame] = useState(false)
   const [problems, createNewProblems] = useProblems()
   const [savedScore, setSavedScore] = useState(undefined)
+  const [postedScore, setPostedScore] = useState(undefined)
   const [openPostScore, setOpenPostScore] = useState(false)
   const [name, setName] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
@@ -174,8 +175,8 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   }
 
   const handlePostScore = () => {
-    if (name.length > 25) {
-      setErrorMsg('Name must be less than 25 letters.')
+    if (name.length > 15) {
+      setErrorMsg('Name must be less than 15 letters.')
       return
     }
     if (!validateAlphaString(name)) {
@@ -202,7 +203,8 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
         body: JSON.stringify(scoreObj),
       });
       const json = await response.json()
-      return json;
+      setPostedScore(json)
+      return;
     } catch (error) {
       console.error(error);
     }
@@ -216,7 +218,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
 
   return (
     <View style={styles.container}>
-      {gameOver ? <GameResultComponent score={score} handlePlayAgain={handlePlayAgain} db={db} gameType={gameType} navigation={navigation} savedScore={savedScore} /> :
+      {gameOver ? <GameResultComponent score={score} handlePlayAgain={handlePlayAgain} db={db} gameType={gameType} navigation={navigation} savedScore={savedScore} postedScore={postedScore} /> :
         startGame ? <View style={styles.gameContainer}>
           <View style={styles.timerContainer}>
             <Text style={styles.appLogTop}>{timer}</Text>

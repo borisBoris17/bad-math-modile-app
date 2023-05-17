@@ -1,8 +1,6 @@
 import uuid from 'react-native-uuid';
 
 export const validateAlphaString = (str) => {
-  console.log('str', str)
-  console.log(/^[A-Za-z]+$/.test(str))
   return /^[A-Za-z]+$/.test(str);
 }
 
