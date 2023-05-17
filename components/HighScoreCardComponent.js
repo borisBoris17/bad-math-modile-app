@@ -36,6 +36,8 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
     cardContainer: {
       marginVertical: 10,
       backgroundColor: 'white',
+      paddingHorizontal: 5,
+      paddingVertical: 10,
     },
     highScoreTitleContainer: {
       margin: 10,
@@ -52,7 +54,6 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
       marginTop: 10,
     },
     highScoreGroupButtonStyle: {
-      // backgroundColor: theme.colors.primary,
       paddingVertical: 5,
       paddingHorizontal: '1.5%',
       borderRadius: 15,
@@ -60,7 +61,6 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
     },
     highScoreGroupButtonTextStyle: {
       fontSize: 15,
-      // color: theme.colors.onPrimary,
       textAlign: 'center',
     },
     selectedHighScores: {
