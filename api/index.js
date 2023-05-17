@@ -77,9 +77,16 @@ async function saveScore(body, response) {
   try {
     const data = await ddbDocClient.send(new PutCommand(params));
     console.log("Success - item added or updated", data);
+    console.log('response', {
+      statusCode: 201,
+      body: {
+        message: "Success - item added or updated",
+        item: JSON.stringify(newItem)
+      }
+    })
     response = {
       statusCode: 201,
-      body: {message: JSON.stringify("Success - item added or updated")}
+      body: JSON.stringify(newItem)
     };
   } catch (err) {
     console.log('error', err);
@@ -106,7 +113,6 @@ async function fetchAllScoresByType(response, gameType) {
   console.log(sevenDaysAgo)
   const sevenDaysParams = {
     TableName: "bad-math-score",
-    ScanIndexForward: false,
     FilterExpression: "#T = :T and #D > :D",
     ExpressionAttributeValues: {
       ":T": `${gameType}`,
