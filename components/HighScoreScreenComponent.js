@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { runTransaction } from "../Utilities/dbUtils";
+import HighScoreCardComponent from "./HighScoreCardComponent";
 import HighScoreTableComponent from "./HighScoreTableComponent";
 
 
@@ -13,11 +14,12 @@ export default function HighScoreScreenComponent({ navigation, db }) {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: theme.colors.primaryContainer,
-      alignItems: 'center',
+      // flex: 1,
+      // backgroundColor: theme.colors.primaryContainer,
+      // alignItems: 'center',
     },
     scrollContainer: {
+      display: 'flex',
       backgroundColor: theme.colors.primaryContainer,
       alignItems: 'center',
     },
@@ -59,16 +61,18 @@ export default function HighScoreScreenComponent({ navigation, db }) {
   }
 
   return (
-    <View style={styles.container}>
+    // <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <HighScoreTableComponent gameType="Timed" highScores={timedHighScores} />
-        <HighScoreTableComponent gameType="Survival" highScores={survivalHighScores} />
+        <HighScoreCardComponent gameType="Timed" db={db} />
+        <HighScoreCardComponent gameType="Survival" db={db} />
+        {/* <HighScoreTableComponent gameType="Timed" highScores={timedHighScores} />
+        <HighScoreTableComponent gameType="Survival" highScores={survivalHighScores} /> */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
             <Text style={styles.buttonLabel}>Home</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    // </View>
   )
 }

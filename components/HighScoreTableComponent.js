@@ -7,15 +7,6 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
   const theme = useTheme();
 
   const styles = StyleSheet.create({
-    highScoreTitleContainer: {
-      margin: 10,
-    },
-    highScoreTitle: {
-      fontSize: 35,
-      color: theme.colors.primary,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
     highScoreContainer: {
       flexDirection: 'row',
       width: '85%',
@@ -55,9 +46,7 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
     <React.Fragment>
       {
         highScores?.length > 0 ?
-          <View style={styles.highScoreTitleContainer}>
-            <Text style={styles.highScoreTitle}>{`${gameType} High Scores`}</Text>
-          </View>
+          ''
           : ''
       }
       { highScores.map((highScore, index) => (

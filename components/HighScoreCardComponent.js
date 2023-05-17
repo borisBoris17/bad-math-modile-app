@@ -33,11 +33,18 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
   const theme = useTheme();
 
   const styles = StyleSheet.create({
-    highScoreTableContainer: {
-      flex: 1,
-    },
     cardContainer: {
+      marginVertical: 10,
       backgroundColor: 'white',
+    },
+    highScoreTitleContainer: {
+      margin: 10,
+    },
+    highScoreTitle: {
+      fontSize: 35,
+      color: theme.colors.primary,
+      fontWeight: 'bold',
+      textAlign: 'center',
     },
     highScoreGroupsButtonContainer: {
       display: 'flex',
@@ -81,6 +88,9 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
 
   return (
     <Card style={styles.cardContainer}>
+      <View style={styles.highScoreTitleContainer}>
+        <Text style={styles.highScoreTitle}>{`${gameType} High Scores`}</Text>
+      </View>
       <View style={styles.highScoreGroupsButtonContainer}>
         <TouchableOpacity style={[styles.highScoreGroupButtonStyle, viewedScore === 'mine' ? styles.selectedHighScoresButton : {}]} onPress={() => setViewedScore('mine')}>
           <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === 'mine' ? styles.selectedHighScores : {}]}>My Highs</Text>
@@ -95,7 +105,7 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
           <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === '30Days' ? styles.selectedHighScores : {}]}>Past 30 Days</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.highScoreTableContainer}>
+      <View>
         {displaySelectedHighScore()}
       </View>
     </Card>
