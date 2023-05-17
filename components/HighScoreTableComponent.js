@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 
@@ -44,11 +44,6 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
 
   return (
     <React.Fragment>
-      {
-        highScores?.length > 0 ?
-          ''
-          : ''
-      }
       { highScores.map((highScore, index) => (
         <View key={highScore.id} style={styles.highScoreContainer}>
           <Text style={[styles.placeText, thisScore && thisScore.id === highScore.id ? styles.thisPlaceText : '']}>{index + 1}.</Text>

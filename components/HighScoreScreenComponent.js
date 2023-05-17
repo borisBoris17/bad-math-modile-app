@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { runTransaction } from "../Utilities/dbUtils";
 import HighScoreCardComponent from "./HighScoreCardComponent";
-import HighScoreTableComponent from "./HighScoreTableComponent";
 
 
 export default function HighScoreScreenComponent({ navigation, db }) {
-  const [timedHighScores, setTimedHighScores] = useState([])
-  const [survivalHighScores, setSurvivalHighScores] = useState([])
 
   const theme = useTheme();
 
