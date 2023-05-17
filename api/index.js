@@ -32,6 +32,7 @@ export const handler = async (event) => {
   console.log('Request event: ', event)
   const { requestContext, body, queryStringParameters } = event
   let response;
+  // console.log('body', body)
 
   switch (requestContext.http.method) {
     case 'GET':
@@ -65,26 +66,36 @@ export const handler = async (event) => {
 };
 
 async function saveScore(body, response) {
+  const newItem = {...JSON.parse(body), date: Date.now()};
+  console.log('new Item', newItem)
   const params = {
     TableName: 'bad-math-score',
-    Item: { ...JSON.parse(body) }
+    Item: newItem
   };
   console.log('params', params);
 
   try {
     const data = await ddbDocClient.send(new PutCommand(params));
     console.log("Success - item added or updated", data);
+    console.log('response', {
+      statusCode: 201,
+      body: {
+        message: "Success - item added or updated",
+        item: JSON.stringify(newItem)
+      }
+    })
     response = {
       statusCode: 201,
-      body: "Success - item added or updated"
+      body: JSON.stringify(newItem)
     };
   } catch (err) {
     console.log('error', err);
     response = {
       statusCode: 500,
-      body: err
+      body: {message: JSON.stringify(err)}
     };
   }
+  console.log("response", response)
   return response;
 }
 
@@ -98,18 +109,76 @@ async function fetchAllScores(response) {
 }
 
 async function fetchAllScoresByType(response, gameType) {
-  const params = {
+  const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
+  console.log(sevenDaysAgo)
+  const sevenDaysParams = {
     TableName: "bad-math-score",
-    FilterExpression: "#T = :T",
+    FilterExpression: "#T = :T and #D > :D",
     ExpressionAttributeValues: {
-      ":T": `${gameType}`
+      ":T": `${gameType}`,
+      ":D": sevenDaysAgo
     },
     ExpressionAttributeNames: {
       "#T": "gameType",
+      "#D": "date",
     },
   };
 
-  response = await scanDocument(params, response);
+  const lastSevenDays = await scanDocument(sevenDaysParams, response);
+  const filteredlastSevenDays = JSON.parse(lastSevenDays.body);
+  if (filteredlastSevenDays) {
+    filteredlastSevenDays.sort((a,b) => b.score - a.score)
+  }
+  // figure out how to build approopriate body 
+  
+  const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000)
+  console.log(thirtyDaysAgo)
+  const thirtyDaysParams = {
+    TableName: "bad-math-score",
+    FilterExpression: "#T = :T and #D > :D",
+    ExpressionAttributeValues: {
+      ":T": `${gameType}`,
+      ":D": thirtyDaysAgo
+    },
+    ExpressionAttributeNames: {
+      "#T": "gameType",
+      "#D": "date",
+    },
+  };
+
+  const lastThirtDays = await scanDocument(thirtyDaysParams, response);
+  const filteredlastThirtyDays = JSON.parse(lastThirtDays.body);
+  if (filteredlastThirtyDays) {
+    filteredlastThirtyDays.sort((a,b) => b.score - a.score)
+  }
+  
+  
+  const oneDayAgo = Date.now() - (1 * 24 * 60 * 60 * 1000)
+  console.log(oneDayAgo)
+  const oneDayParams = {
+    TableName: "bad-math-score",
+    FilterExpression: "#T = :T and #D > :D",
+    ExpressionAttributeValues: {
+      ":T": `${gameType}`,
+      ":D": oneDayAgo
+    },
+    ExpressionAttributeNames: {
+      "#T": "gameType",
+      "#D": "date",
+    },
+  };
+
+  const lastDay = await scanDocument(oneDayParams, response);
+  const filteredlastDay = JSON.parse(lastDay.body);
+  if (filteredlastDay) {
+    filteredlastDay.sort((a,b) => b.score - a.score)
+  }
+  
+  response = {lastSevenDays: filteredlastSevenDays.slice(0, 10),
+    lastThirtyDays: filteredlastThirtyDays.slice(0, 10),
+    lastDay: filteredlastDay.slice(0, 10)
+  }
+  
   return response;
 }
 

@@ -7,15 +7,6 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
   const theme = useTheme();
 
   const styles = StyleSheet.create({
-    highScoreTitleContainer: {
-      margin: 10,
-    },
-    highScoreTitle: {
-      fontSize: 35,
-      color: theme.colors.primary,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
     highScoreContainer: {
       flexDirection: 'row',
       width: '85%',
@@ -28,8 +19,16 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
       color: theme.colors.secondary,
       textAlign: 'right',
     },
+    nameText: {
+      minWidth: 50,
+      margin: 5,
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: theme.colors.secondary,
+      textAlign: 'left',
+    },
     thisPlaceText: {
-      fontSize: 65,
+      fontSize: 30,
       color: theme.colors.primary,
       margin: 0
     },
@@ -45,16 +44,10 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
 
   return (
     <React.Fragment>
-      {
-        highScores?.length > 0 ?
-          <View style={styles.highScoreTitleContainer}>
-            <Text style={styles.highScoreTitle}>{`${gameType} High Scores`}</Text>
-          </View>
-          : ''
-      }
       { highScores.map((highScore, index) => (
         <View key={highScore.id} style={styles.highScoreContainer}>
           <Text style={[styles.placeText, thisScore && thisScore.id === highScore.id ? styles.thisPlaceText : '']}>{index + 1}.</Text>
+          <Text style={[styles.nameText, thisScore && thisScore.id === highScore.id ? styles.thisPlaceText : '']}>{highScore.name}</Text>
           <Text style={[styles.highScoreText, thisScore && thisScore.id === highScore.id ? styles.thisPlaceText : '']}>{highScore.score}</Text>
         </View>
       ))}

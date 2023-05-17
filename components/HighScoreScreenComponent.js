@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { runTransaction } from "../Utilities/dbUtils";
-import HighScoreTableComponent from "./HighScoreTableComponent";
+import HighScoreCardComponent from "./HighScoreCardComponent";
 
 
 export default function HighScoreScreenComponent({ navigation, db }) {
-  const [timedHighScores, setTimedHighScores] = useState([])
-  const [survivalHighScores, setSurvivalHighScores] = useState([])
 
   const theme = useTheme();
 
@@ -18,6 +15,7 @@ export default function HighScoreScreenComponent({ navigation, db }) {
       alignItems: 'center',
     },
     scrollContainer: {
+      display: 'flex',
       backgroundColor: theme.colors.primaryContainer,
       alignItems: 'center',
     },
@@ -47,22 +45,11 @@ export default function HighScoreScreenComponent({ navigation, db }) {
     },
   })
 
-  useEffect(() => {
-    fetchHighScores()
-  })
-
-  const fetchHighScores = async () => {
-    const timedHS = await runTransaction(db, `SELECT * FROM SCORE where game_type = "Timed" order by score desc, date_played desc, id desc limit 10;`)
-    const survivalHS = await runTransaction(db, `SELECT * FROM SCORE where game_type = "Survival" order by score desc, date_played desc, id desc limit 10;`)
-    setTimedHighScores(timedHS)
-    setSurvivalHighScores(survivalHS)
-  }
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <HighScoreTableComponent gameType="Timed" highScores={timedHighScores} />
-        <HighScoreTableComponent gameType="Survival" highScores={survivalHighScores} />
+        <HighScoreCardComponent gameType="Timed" db={db} />
+        <HighScoreCardComponent gameType="Survival" db={db} />
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
             <Text style={styles.buttonLabel}>Home</Text>

@@ -1,26 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
-import { runTransaction } from '../Utilities/dbUtils';
-import HighScoreTableComponent from './HighScoreTableComponent';
+import HighScoreCardComponent from './HighScoreCardComponent';
 
-export function GameResultComponent({ score, handlePlayAgain, db, gameType, navigation, savedScore }) {
-
-  const [highScores, setHighScores] = useState([])
-
-  useEffect(() => {
-    fetchHighScores()
-  }, []);
-
-  const fetchHighScores = async () => {
-    const foundHighScores = await runTransaction(db, `SELECT * FROM SCORE where game_type = "${gameType}" order by score desc, date_played desc, id desc limit 10;`)
-    setHighScores(foundHighScores)
-  }
+export function GameResultComponent({ score, handlePlayAgain, db, gameType, navigation, savedScore, postedScore }) {
 
   const theme = useTheme();
 
   const styles = StyleSheet.create({
     container: {
+      width: '100%',
+      height: '100%',
       display: 'flex',
     },
     mainMessageContainer: {
@@ -46,7 +36,7 @@ export function GameResultComponent({ score, handlePlayAgain, db, gameType, navi
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 15,
-      width: '100%',
+      margin: '3%',
     },
     buttonLabel: {
       fontSize: 25,
@@ -77,12 +67,9 @@ export function GameResultComponent({ score, handlePlayAgain, db, gameType, navi
       flexDirection: 'row',
       marginTop: 'auto',
     },
-    highScoreTableContainer: {
-      flex: 1,
-    },
   });
 
-  return (
+  return (<ScrollView>
     <View style={styles.container}>
       <View style={styles.mainMessageContainer}>
         <Text style={styles.gameText}>Game Over!</Text>
@@ -90,9 +77,7 @@ export function GameResultComponent({ score, handlePlayAgain, db, gameType, navi
       <View style={styles.scoreContainer}>
         <Text style={styles.gameText}>Score: {score}</Text>
       </View>
-      <View style={styles.highScoreTableContainer}>
-        <HighScoreTableComponent gameType={gameType} highScores={highScores} thisScore={savedScore} />
-      </View>
+      <HighScoreCardComponent savedScore={savedScore} postedScore={postedScore} gameType={gameType} db={db} />
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.buttonStyle} onPress={() => handlePlayAgain()}>
@@ -106,5 +91,6 @@ export function GameResultComponent({ score, handlePlayAgain, db, gameType, navi
         </View>
       </View>
     </View>
+  </ScrollView>
   )
 }
