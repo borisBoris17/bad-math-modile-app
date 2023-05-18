@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';
-import { Provider } from 'react-native-paper';
+import { Provider, Text, TextInput } from 'react-native-paper';
 import HomeComponent from './components/HomeComponent';
 import GameComponent from './components/GameComponent';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,11 @@ import * as SQLite from 'expo-sqlite'
 import { initDatabase } from './Utilities/dbUtils';
 import HighScoreScreenComponent from './components/HighScoreScreenComponent';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+TextInput.defaultProps = TextInput.defaultProps || {};
+TextInput.defaultProps.allowFontScaling = false;
 
 const Stack = createNativeStackNavigator();
 
