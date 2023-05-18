@@ -32,7 +32,6 @@ export const handler = async (event) => {
   console.log('Request event: ', event)
   const { requestContext, body, queryStringParameters } = event
   let response;
-  // console.log('body', body)
 
   switch (requestContext.http.method) {
     case 'GET':

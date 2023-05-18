@@ -101,9 +101,10 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       textAlign: 'center',
     },
     gameText: {
-      fontSize: 35,
+      fontSize: 20,
       fontWeight: 'bold',
-      textAlign: 'center'
+      textAlign: 'center',
+      paddingHorizontal: 20,
     },
     postScoreContainer: {
       margin: '5%',
@@ -141,6 +142,11 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
 
   const handleProblemPress = (problem) => {
     if (!problem.isWrong) {
+      if (displayMessage) {
+        setTimer(0)
+        finishGame()
+        return;
+      }
       setDisplayMessage(true)
       if (gameType === 'Timed') {
         const newTime = timer - 2
@@ -227,7 +233,10 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
             <Text style={styles.appLogTop}>{score}</Text>
           </View>
           <View style={styles.messageContainer}>
-            {displayMessage ? <Text style={styles.gameText}>{displayMessage} Oops! That one is correct!</Text> : ''}
+            {displayMessage ? <View>
+              <Text style={styles.gameText}>Oops! That one is correct! </Text>
+              <Text style={styles.gameText}>Two wrong guesses in a row is game over!</Text>
+              </View> : ''}
           </View>
           {
             problems?.map((problem, index) => <ProblemButtonComponent key={index} problem={problem} handleProblemPress={handleProblemPress} />)
