@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "upgrades": {
+    "to_v2": [
+      "alter table score add column is_posted varchar(1);"
+    ]
+  }
+}

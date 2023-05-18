@@ -7,7 +7,7 @@ import HomeComponent from './components/HomeComponent';
 import GameComponent from './components/GameComponent';
 import { useEffect, useState } from 'react';
 import * as SQLite from 'expo-sqlite'
-import { initDatabase } from './Utilities/dbUtils';
+import { initDatabase, upgradeDbVersion } from './Utilities/dbUtils';
 import HighScoreScreenComponent from './components/HighScoreScreenComponent';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
@@ -26,6 +26,12 @@ export default function App() {
     initDatabase(newDb)
     setDb(newDb)
   }, [])
+
+  useEffect(() => {
+    if (db) {
+      upgradeDbVersion(db)
+    }
+  })
 
   const theme = {
     "colors": {

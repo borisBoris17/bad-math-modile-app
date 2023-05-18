@@ -7,9 +7,9 @@ import { GameResultComponent } from './GameResultComponent';
 import { GameStartComponent } from './GameStartComponent';
 import ProblemButtonComponent from './ProblemButtonComponent';
 import { runTransaction } from '../Utilities/dbUtils';
-import { createScoreObj, validateAlphaString } from '../Utilities/utils';
+import { createScoreObj, formatDateForQuery, validateAlphaString } from '../Utilities/utils';
 
-export default function GameComponent({ navigation, gameType, startTime = 30, db }) {
+export default function GameComponent({ navigation, gameType, startTime = 5, db }) {
   const [timer, setTimer] = useState(startTime)
   const [displayMessage, setDisplayMessage] = useState(false);
   const [gameOver, setGameOver] = useState(false)
@@ -40,9 +40,18 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   }, [timer, startGame]);
 
   const finishGame = async () => {
-    const savedScore = await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${"2023-04-12"}") RETURNING *;`)
+    const dateStr = formatDateForQuery(new Date());
+    const savedScore = await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${dateStr}") RETURNING *;`)
     setSavedScore(savedScore[0]);
-    setOpenPostScore(true)
+    const postedScores = await runTransaction(db, `Select * from Score where date_played = "${dateStr}" and is_posted = "1";`)
+    if (postedScores.length === 0) {
+      setOpenPostScore(true)
+    } else if (postedScores.length === 0) {
+      // Ask if want to see add for second post
+      setOpenPostScore(true)
+    } else {
+      setGameOver(true)
+    }
   }
 
   const theme = useTheme();
@@ -208,6 +217,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
         },
         body: JSON.stringify(scoreObj),
       });
+      await runTransaction(db, `update Score set is_posted = "1" where id = ${savedScore.id};`)
       const json = await response.json()
       setPostedScore(json)
       return;

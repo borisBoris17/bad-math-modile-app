@@ -44,7 +44,7 @@ export default function HighScoreTableComponent({ highScores, gameType, thisScor
 
   return (
     <React.Fragment>
-      { highScores.map((highScore, index) => (
+      { highScores?.map((highScore, index) => (
         <View key={highScore.id} style={styles.highScoreContainer}>
           <Text style={[styles.placeText, thisScore && thisScore.id === highScore.id ? styles.thisPlaceText : '']}>{index + 1}.</Text>
           <Text style={[styles.nameText, thisScore && thisScore.id === highScore.id ? styles.thisPlaceText : '']}>{highScore.name}</Text>
