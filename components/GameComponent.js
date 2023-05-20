@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
 import { Modal, Text, TextInput, useTheme, HelperText} from 'react-native-paper';
 import { useProblems } from '../hooks/useProblems';
 import { GameResultComponent } from './GameResultComponent';
@@ -8,8 +8,15 @@ import { GameStartComponent } from './GameStartComponent';
 import ProblemButtonComponent from './ProblemButtonComponent';
 import { runTransaction } from '../Utilities/dbUtils';
 import { createScoreObj, formatDateForQuery, validateAlphaString } from '../Utilities/utils';
+import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
-export default function GameComponent({ navigation, gameType, startTime = 5, db }) {
+const rewardedAdUnitId = process.env.NODE_ENV !== 'production' ? TestIds.REWARDED : 'ca-app-pub-4235799806003930/7282514402';
+
+const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
+  requestNonPersonalizedAdsOnly: true
+});
+
+export default function GameComponent({ navigation, gameType, startTime = 30, db }) {
   const [timer, setTimer] = useState(startTime)
   const [displayMessage, setDisplayMessage] = useState(false);
   const [gameOver, setGameOver] = useState(false)
@@ -21,38 +28,10 @@ export default function GameComponent({ navigation, gameType, startTime = 5, db 
   const [openPostScore, setOpenPostScore] = useState(false)
   const [name, setName] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-
-  useEffect(() => {
-    if (!startGame) {
-      return
-    }
-    if (timer <= 0) {
-      finishGame()
-      return;
-    }
-    const interval = setInterval(() => {
-      const newTimer = timer - 1
-      setTimer(newTimer)
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [timer, startGame]);
-
-  const finishGame = async () => {
-    const dateStr = formatDateForQuery(new Date());
-    const savedScore = await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${dateStr}") RETURNING *;`)
-    setSavedScore(savedScore[0]);
-    const postedScores = await runTransaction(db, `Select * from Score where date_played = "${dateStr}" and is_posted = "1";`)
-    if (postedScores.length === 0) {
-      setOpenPostScore(true)
-    } else if (postedScores.length === 0) {
-      // Ask if want to see add for second post
-      setOpenPostScore(true)
-    } else {
-      setGameOver(true)
-    }
-  }
+  const [isPostedGame, setIsPostedGame] = useState(false)
+  const [numPostedGames, setNumPostedGames] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [canPostSecond, setCanPostSecond] = useState(false)
 
   const theme = useTheme();
 
@@ -149,11 +128,79 @@ export default function GameComponent({ navigation, gameType, startTime = 5, db 
     }
   });
 
+  useEffect(() => {
+    if (!startGame) {
+      return
+    }
+    if (timer <= 0) {
+      finishGame()
+      return;
+    }
+    const interval = setInterval(() => {
+      const newTimer = timer - 1
+      setTimer(newTimer)
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer, startGame]);
+
+  useEffect(() => {
+    getNumPostedGames();
+  }, [])
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      setLoaded(true);
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      reward => {
+        setCanPostSecond(true)
+        rewarded.load();
+      },
+    );
+
+    // Start loading the rewarded ad straight away
+    rewarded.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
+
+  const getNumPostedGames = async () => {
+    const dateStr = formatDateForQuery(new Date());
+    const postedScores = await runTransaction(db, `Select * from Score where date_played = "${dateStr}" and game_type = "${gameType}" and is_posted = "1";`)
+    if (postedScores === undefined || postedScores.length ===0) {
+      setNumPostedGames(0)
+    } else if (postedScores.length === 1) {
+      setNumPostedGames(1)
+    } else {
+      setNumPostedGames(2)
+    }
+  }
+
+  const finishGame = async () => {
+    // const sdfa = await runTransaction(db, 'Delete from score;')
+    const dateStr = formatDateForQuery(new Date());
+    const savedScore = await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${dateStr}") RETURNING *;`)
+    setSavedScore(savedScore[0]);
+
+    // new 
+    if (isPostedGame) {
+      setOpenPostScore(true)
+    } else {
+      setGameOver(true)
+    }
+  }
+
   const handleProblemPress = (problem) => {
     if (!problem.isWrong) {
       if (displayMessage) {
         setTimer(0)
-        finishGame()
         return;
       }
       setDisplayMessage(true)
@@ -185,8 +232,17 @@ export default function GameComponent({ navigation, gameType, startTime = 5, db 
     setStartGame(false)
   }
 
-  const handleStart = () => {
+  const handleStart = (isPostedGame) => {
+    console.log('can post second', canPostSecond)
+    setCanPostSecond(false)
     setStartGame(true)
+    setIsPostedGame(isPostedGame)
+  }
+
+  const handleSecondPostedGame = () => {
+    if (loaded) {
+      rewarded.show()
+    }
   }
 
   const handlePostScore = () => {
@@ -202,8 +258,6 @@ export default function GameComponent({ navigation, gameType, startTime = 5, db 
     const scoreObj = createScoreObj(score, name, gameType)
     postScore(scoreObj)
     setOpenPostScore(false);
-    setGameOver(true)
-    setName('')
     // TODO: Implement Toast message
   }
 
@@ -220,10 +274,23 @@ export default function GameComponent({ navigation, gameType, startTime = 5, db 
       await runTransaction(db, `update Score set is_posted = "1" where id = ${savedScore.id};`)
       const json = await response.json()
       setPostedScore(json)
+      setGameOver(true)
+      setName('')
       return;
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const safeDissmiss = () => {
+    Alert.alert('Skip Post?', 'This Score will be lost and not Posted.', [
+      {
+        text: 'Cancel',
+        onPress: () => { },
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => handleDismissModal() },
+    ]);
   }
 
   const handleDismissModal = () => {
@@ -257,9 +324,9 @@ export default function GameComponent({ navigation, gameType, startTime = 5, db 
             </TouchableOpacity>
           </View>
         </View> :
-          <GameStartComponent handleStart={handleStart} gameType={gameType} startTime={startTime} navigation={navigation} />
+          <GameStartComponent handleStart={handleStart} gameType={gameType} startTime={startTime} navigation={navigation} numGamesPosted={numPostedGames} handleSecondPostedGame={handleSecondPostedGame} canPostSecond={canPostSecond} />
       }
-      <Modal visible={openPostScore} contentContainerStyle={styles.postScoreContainer} onDismiss={handleDismissModal}>
+      <Modal visible={openPostScore} contentContainerStyle={styles.postScoreContainer} onDismiss={safeDissmiss}>
         <View style={styles.modalTitleRow}>
           <Text style={styles.modalTitle}>Post Score</Text>
         </View>
