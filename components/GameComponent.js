@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
-import { Modal, Text, TextInput, useTheme, HelperText} from 'react-native-paper';
+import { Modal, Text, TextInput, useTheme, HelperText, ActivityIndicator} from 'react-native-paper';
 import { useProblems } from '../hooks/useProblems';
 import { GameResultComponent } from './GameResultComponent';
 import { GameStartComponent } from './GameStartComponent';
@@ -32,6 +32,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   const [numPostedGames, setNumPostedGames] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [canPostSecond, setCanPostSecond] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const theme = useTheme();
 
@@ -157,12 +158,12 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       RewardedAdEventType.EARNED_REWARD,
       reward => {
         setCanPostSecond(true)
-        rewarded.load();
+        rewarded.load()
       },
     );
 
     // Start loading the rewarded ad straight away
-    rewarded.load();
+    rewarded.load()
 
     // Unsubscribe from events on unmount
     return () => {
@@ -233,7 +234,6 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   }
 
   const handleStart = (isPostedGame) => {
-    console.log('can post second', canPostSecond)
     setCanPostSecond(false)
     setStartGame(true)
     setIsPostedGame(isPostedGame)
@@ -242,6 +242,9 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   const handleSecondPostedGame = () => {
     if (loaded) {
       rewarded.show()
+    } else {
+      setCanPostSecond(true)
+      rewarded.load()
     }
   }
 
@@ -257,12 +260,12 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
     setErrorMsg('')
     const scoreObj = createScoreObj(score, name, gameType)
     postScore(scoreObj)
-    setOpenPostScore(false);
     // TODO: Implement Toast message
   }
 
   const postScore = async (scoreObj) => {
     try {
+      setIsLoading(true)
       const response = await fetch('https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/score',{
         method: 'POST',
         headers: {
@@ -276,6 +279,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       setPostedScore(json)
       setGameOver(true)
       setName('')
+      setOpenPostScore(false);
       return;
     } catch (error) {
       console.error(error);
@@ -336,10 +340,11 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
             {errorMsg.length > 0 ? <HelperText type="error" >
               {errorMsg}
             </HelperText> : null}
-            <TextInput style={{marginVertical: '5%'}} disabled={true} mode='outlined' label='Score' value={score > 0 ? score : ' '}>{score}</TextInput>
+            <TextInput style={{marginVertical: '5%'}} disabled={true} mode='outlined' label='Score' value={score > 0 ? score : ''}>{score}</TextInput>
           </View>
           <TouchableOpacity style={styles.buttonStyle} onPress={() => handlePostScore()}>
-            <Text style={styles.buttonLabel}>Post Score</Text>
+            {isLoading ? <ActivityIndicator size="large" color={theme.colors.onPrimary} /> : 
+            <Text style={styles.buttonLabel}>Post Score</Text>}
           </TouchableOpacity>
         </View>
       </Modal>
