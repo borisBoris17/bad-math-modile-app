@@ -277,6 +277,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
       const json = await response.json()
       setPostedScore(json)
       setGameOver(true)
+      getNumPostedGames()
       setName('')
       setOpenPostScore(false);
       return;
