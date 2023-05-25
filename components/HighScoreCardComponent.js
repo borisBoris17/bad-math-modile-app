@@ -57,11 +57,10 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
       flexWrap: 'wrap',
       alignItems: 'center',
       marginTop: 10,
-      marginLeft: '5%',
     },
     highScoreGroupButtonStyle: {
       paddingVertical: 5,
-      width: '45%',
+      width: '48%',
       borderRadius: 15,
       margin: '1%',
       backgroundColor: theme.colors.primaryContainer,
