@@ -98,7 +98,7 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
     postScoreContainer: {
       margin: '5%',
       backgroundColor: theme.colors.tertiary,
-      height: '40%',
+      height: '50%',
       width: '90%',
       borderRadius: 5,
     },
@@ -185,7 +185,6 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   }
 
   const finishGame = async () => {
-    // const sdfa = await runTransaction(db, 'Delete from score;')
     const dateStr = formatDateForQuery(new Date());
     const savedScore = await runTransaction(db, `INSERT INTO SCORE (GAME_TYPE, SCORE, DATE_PLAYED) VALUES ("${gameType}", ${score}, "${dateStr}") RETURNING *;`)
     setSavedScore(savedScore[0]);

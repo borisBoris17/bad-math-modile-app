@@ -35,9 +35,12 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
   const styles = StyleSheet.create({
     cardContainer: {
       marginVertical: 10,
+      marginHorizontal: 5,
       backgroundColor: 'white',
       paddingHorizontal: 5,
       paddingVertical: 10,
+      display: 'flex',
+      alignItems: 'center',
     },
     highScoreTitleContainer: {
       margin: 10,
@@ -51,17 +54,24 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
     highScoreGroupsButtonContainer: {
       display: 'flex',
       flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'center',
       marginTop: 10,
+      marginLeft: '5%',
     },
     highScoreGroupButtonStyle: {
       paddingVertical: 5,
-      paddingHorizontal: '1.5%',
+      width: '45%',
       borderRadius: 15,
       margin: '1%',
+      backgroundColor: theme.colors.primaryContainer,
+      borderRadius: 10,
     },
     highScoreGroupButtonTextStyle: {
-      fontSize: 15,
+      fontSize: 18,
+      padding: 5,
       textAlign: 'center',
+      fontWeight: 'bold'
     },
     selectedHighScores: {
       color: theme.colors.onPrimary,
@@ -71,7 +81,11 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
     selectedHighScoresButton: {
       backgroundColor: theme.colors.primary,
       borderRadius: 10,
-    }
+      fontWeight: 'bold'
+    },
+    scoresContainer: {
+      marginLeft: '5%',
+    },
   });
 
   const displaySelectedHighScore = () => {
@@ -93,19 +107,19 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
       </View>
       <View style={styles.highScoreGroupsButtonContainer}>
         <TouchableOpacity style={[styles.highScoreGroupButtonStyle, viewedScore === 'mine' ? styles.selectedHighScoresButton : {}]} onPress={() => setViewedScore('mine')}>
-          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === 'mine' ? styles.selectedHighScores : {}]}>My Highs</Text>
+          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === 'mine' ? styles.selectedHighScores : {}]}>My High Scores</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.highScoreGroupButtonStyle, viewedScore === 'lastDay' ? styles.selectedHighScoresButton : {}]} onPress={() => setViewedScore('lastDay')}>
-          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === 'lastDay' ? styles.selectedHighScores : {}]}>Past Day</Text>
+          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === 'lastDay' ? styles.selectedHighScores : {}]}>Top Past 24 Hrs</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.highScoreGroupButtonStyle, viewedScore === '7Days' ? styles.selectedHighScoresButton : {}]} onPress={() => setViewedScore('7Days')}>
-          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === '7Days' ? styles.selectedHighScores : {}]}>Past 7 Days</Text>
+          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === '7Days' ? styles.selectedHighScores : {}]}>Top Past 7 Days</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.highScoreGroupButtonStyle, viewedScore === '30Days' ? styles.selectedHighScoresButton : {}]} onPress={() => setViewedScore('30Days')}>
-          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === '30Days' ? styles.selectedHighScores : {}]}>Past 30 Days</Text>
+          <Text style={[styles.highScoreGroupButtonTextStyle, viewedScore === '30Days' ? styles.selectedHighScores : {}]}>Top Past 30 Days</Text>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={styles.scoresContainer}>
         {displaySelectedHighScore()}
       </View>
     </Card>
