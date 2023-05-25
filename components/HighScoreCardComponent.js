@@ -19,7 +19,7 @@ export default function HighScoreCardComponent({ gameType, savedScore, db, poste
   const fetchHighScores = async () => {
     const foundHighScores = await runTransaction(db, `SELECT * FROM SCORE where game_type = "${gameType}" order by score desc, date_played desc, id desc limit 10;`)
     setHighScores(foundHighScores)
-    fetch(`https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/scores?gameType=${gameType}`)
+    fetch(process.env.NODE_ENV !== 'production' ? `https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/scores?gameType=${gameType}` : `https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/scores?gameType=${gameType}``https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/production/scores?gameType=${gameType}`)
       .then(response => response.json())
       .then(json => {
         setLastDayHighScores(json.lastDay)

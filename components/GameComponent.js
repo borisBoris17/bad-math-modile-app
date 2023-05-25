@@ -265,7 +265,8 @@ export default function GameComponent({ navigation, gameType, startTime = 30, db
   const postScore = async (scoreObj) => {
     try {
       setIsLoading(true)
-      const response = await fetch('https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/score',{
+      const response = await fetch(process.env.NODE_ENV !== 'production' ? 'https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/score' : 
+      'https://7zmgqfw2d1.execute-api.us-west-1.amazonaws.com/production/score',{
         method: 'POST',
         headers: {
           Accept: 'application/json',

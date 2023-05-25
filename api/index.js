@@ -58,7 +58,7 @@ export const handler = async (event) => {
       }
       break
     case 'POST':
-      if (requestContext.http.path === '/score') {
+      if (requestContext.http.path.includes('/score')) {
         response = await saveScore(body, response);
       }
       break;
