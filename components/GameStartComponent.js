@@ -59,7 +59,7 @@ export function GameStartComponent({ handleStart, gameType, startTime, navigatio
         </TouchableOpacity>
       </View> : numGamesPosted === 1 && !canPostSecond ? <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.buttonStyle} onPress={() => handleSecondPostedGame()}>
-          <Text style={styles.buttonLabel}>Start Posted Game1</Text>
+          <Text style={styles.buttonLabel}>Watch Ad!</Text>
         </TouchableOpacity>
       </View> : ''}
       <View style={styles.buttonContainer}>

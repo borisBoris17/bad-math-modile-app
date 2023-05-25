@@ -7,6 +7,8 @@ import { PutCommand } from "@aws-sdk/lib-dynamodb";
 const REGION = "us-west-1";
 const ddbClient = new DynamoDBClient({ region: REGION });
 
+let tableName = 'bad-math-score'
+
 const marshallOptions = {
   // Whether to automatically convert empty strings, blobs, and sets to `null`.
   convertEmptyValues: false, // false, by default.
@@ -32,16 +34,21 @@ export const handler = async (event) => {
   console.log('Request event: ', event)
   const { requestContext, body, queryStringParameters } = event
   let response;
+  if (requestContext.http.path.includes('/production')) {
+    tableName = 'bad-math-prod-score'
+  } else {
+    tableName = 'bad-math-score'
+  }
 
   switch (requestContext.http.method) {
     case 'GET':
-      if (requestContext.http.path === '/healthCheck') {
+      if (requestContext.http.path.includes('/healthCheck')) {
         response = {
           statusCode: 200,
           body: JSON.stringify('bad-math-api is up'),
         };
       }
-      else if (requestContext.http.path === '/scores') {
+      else if (requestContext.http.path.includes('/scores')) {
         const gameType  = queryStringParameters?.gameType
         if (gameType) {
           response = await fetchAllScoresByType(response, gameType);
@@ -68,7 +75,7 @@ async function saveScore(body, response) {
   const newItem = {...JSON.parse(body), date: Date.now()};
   console.log('new Item', newItem)
   const params = {
-    TableName: 'bad-math-score',
+    TableName: tableName,
     Item: newItem
   };
   console.log('params', params);
@@ -100,7 +107,7 @@ async function saveScore(body, response) {
 
 async function fetchAllScores(response) {
   const params = {
-    TableName: "bad-math-score",
+    TableName: tableName,
   };
 
   response = await scanDocument(params, response);
@@ -111,7 +118,7 @@ async function fetchAllScoresByType(response, gameType) {
   const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000)
   console.log(sevenDaysAgo)
   const sevenDaysParams = {
-    TableName: "bad-math-score",
+    TableName: tableName,
     FilterExpression: "#T = :T and #D > :D",
     ExpressionAttributeValues: {
       ":T": `${gameType}`,
@@ -133,7 +140,7 @@ async function fetchAllScoresByType(response, gameType) {
   const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000)
   console.log(thirtyDaysAgo)
   const thirtyDaysParams = {
-    TableName: "bad-math-score",
+    TableName: tableName,
     FilterExpression: "#T = :T and #D > :D",
     ExpressionAttributeValues: {
       ":T": `${gameType}`,
@@ -155,7 +162,7 @@ async function fetchAllScoresByType(response, gameType) {
   const oneDayAgo = Date.now() - (1 * 24 * 60 * 60 * 1000)
   console.log(oneDayAgo)
   const oneDayParams = {
-    TableName: "bad-math-score",
+    TableName: tableName,
     FilterExpression: "#T = :T and #D > :D",
     ExpressionAttributeValues: {
       ":T": `${gameType}`,
