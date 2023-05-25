@@ -15,8 +15,8 @@ export default function HomeComponent({ navigation }) {
       marginVertical: '10%',
     },
     appLogoContainer: {
-      marginTop: '10%',
-      marginBottom: '15%',
+      marginTop: '5%',
+      marginBottom: '10%',
     },
     buttonsContainer: {
       alignItems: 'center',
